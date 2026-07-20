@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pepe Jones</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background: #0f0f0f;
+      color: #ffffff;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .container {
+      width: 100%;
+      max-width: 850px;
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 8px 0;
+      font-size: 28px;
+    }
+    model-viewer {
+      width: 100%;
+      max-width: 800px;
+      height: 65vh;
+      max-height: 580px;
+      background: #1a1a1a;
+      border-radius: 16px;
+      margin: 25px 0;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .download-btn {
+      display: inline-block;
+      padding: 15px 40px;
+      font-size: 17px;
+      font-weight: bold;
+      background: #00ff9d;
+      color: black;
+      text-decoration: none;
+      border-radius: 50px;
+      transition: all 0.2s ease;
+      min-width: 180px;
+    }
+    .download-btn:hover {
+      background: #00cc7a;
+      transform: scale(1.02);
+    }
+    .logo {
+      margin-top: 40px;
+      opacity: 0.85;
+    }
+    .logo img {
+      height: 28px;
+      width: auto;
+    }
+    .info {
+      margin-top: 15px;
+      font-size: 14px;
+      opacity: 0.75;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Pepe Jones</h1>
+    <p style="margin: 0; opacity: 0.85;">3D Avatar • GLB + VRM</p>
+
+    <!-- نمایشگر مدل سه‌بعدی -->
+    <model-viewer 
+      id="model"
+      poster="https://arweave.net/kNuLCr06w42tNwWzu3BWNCTWu77n2PNx5qFIDvRFvl8"
+      alt="Pepe Jones 3D Model"
+      shadow-intensity="1"
+      camera-controls
+      autoplay
+      interaction-prompt="auto">
+    </model-viewer>
+
+    <!-- دکمه‌های دانلود Pepe Jones -->
+    <div class="button-group">
+      <!-- دکمه دانلود GLB -->
+      <a href="https://app.ardrive.io/#/file/7b7daeb4-21bd-4bdd-a3bd-f9677cf35499/view" 
+         target="_blank" 
+         rel="noopener noreferrer"
+         class="download-btn">
+        Download GLB File
+      </a>
+      
+      <!-- دکمه دانلود VRM -->
+      <a href="https://app.ardrive.io/#/file/9906fe20-adce-49ea-ac6a-9d3dab9a6dac/view" 
+         target="_blank" 
+         rel="noopener noreferrer"
+         class="download-btn">
+        Download VRM File
+      </a>
+    </div>
+
+    <div class="info">
+      VRM file ready for Open metaverse platforms<br>
+      we fight for an open metaverse<br>
+      6529REMEME
+    </div>
+
+    <!-- لوگو کوچک -->
+    <div class="logo">
+      <img src="https://sgtpepe.world/assets/sgtpepelogo-menu.svg" alt="Logo">
+    </div>
+  </div>
+
+  <!-- اسکریپت دریافت امن فایل GLB و اجرای انیمیشن -->
+  <script>
+    const TX_ID = "sLBOXO8LTjwKzmZw71504EXXo9JhiNz_mRYNf3gkjF0";
+    
+    // لیست گیت‌وی‌های Arweave برای اطمینان از بارگذاری موفق
+    const gateways = [
+      `https://arweave.net/${TX_ID}`,
+      `https://ar-io.dev/${TX_ID}`,
+      `https://g8way.io/${TX_ID}`
+    ];
+
+    const modelViewer = document.getElementById('model');
+
+    // تابع دانلود مستقیم فایل به صورت Blob
+    async function loadGlbModel() {
+      for (const url of gateways) {
+        try {
+          const response = await fetch(url);
+          if (!response.ok) continue;
+
+          const buffer = await response.arrayBuffer();
+          // تبدیل فایل دریافت شده به فرمت استاندارد GLB
+          const blob = new Blob([buffer], { type: 'model/gltf-binary' });
+          const objectUrl = URL.createObjectURL(blob);
+          
+          modelViewer.src = objectUrl;
+          break;
+        } catch (error) {
+          console.warn(`تلاش برای بارگذاری از ${url} ناموفق بود.`, error);
+        }
+      }
+    }
+
+    // پخش انیمیشن پس از اتمام بارگذاری کامل مدل
+    modelViewer.addEventListener('load', () => {
+      const animations = modelViewer.availableAnimations;
+      if (animations && animations.length > 0) {
+        modelViewer.animationName = animations[0];
+        modelViewer.play();
+      }
+    });
+
+    // شروع فرآیند بارگذاری
+    loadGlbModel();
+  </script>
+
+</body>
+</html>
